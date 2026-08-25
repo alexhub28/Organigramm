@@ -1,0 +1,676 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Organigramm – Bundesamt für Zivildienst ZIVI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=IBM+Plex+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --paper:#F4FAFB;
+    --card:#FFFFFF;
+    --ink:#1F2822;
+    --ink-soft:#5C6862;
+    --line:#DDE3DD;
+    --petrol:#5A959D;        /* CI Petrol – Höheres Kader / fachliche Achse */
+    --mint-soft:#CAE7EA;     /* CI Mint – Colorierung */
+    --petrol-deep:#3F6D73;
+    --lila:#A3A8CA;          /* CI Lila – Kader / RZ-Achse */
+    --lila-soft:#EDEEF4;
+    --kiwi:#B1B488;          /* CI Kiwigrün – Ressourcen */
+    --kiwi-soft:#EFF0E7;
+    --gelb:#FCEB30;          /* CI Limonengelb – Mitglied der Geschäftsleitung */
+    --radius:14px;
+    --display:"Bricolage Grotesque",sans-serif;
+    --body:"IBM Plex Sans",sans-serif;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{
+    background:var(--paper);color:var(--ink);
+    font-family:var(--body);font-size:15px;line-height:1.5;min-height:100vh;
+  }
+
+  header{
+    position:sticky;top:0;z-index:20;
+    background:color-mix(in srgb, var(--paper) 88%, transparent);
+    backdrop-filter:blur(8px);
+    border-bottom:1px solid var(--line);
+  }
+  .header-inner{
+    max-width:1220px;margin:0 auto;padding:14px 24px;
+    display:flex;align-items:baseline;gap:12px;flex-wrap:wrap;
+  }
+  .header-inner h1{font-family:var(--display);font-weight:800;font-size:1.12rem;letter-spacing:-.01em}
+  .header-inner span{font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-soft)}
+
+  .intro{max-width:1220px;margin:0 auto;padding:38px 24px 4px}
+  .intro .dept{font-size:.78rem;color:var(--ink-soft)}
+  .intro h2{
+    font-family:var(--display);font-weight:800;
+    font-size:clamp(1.7rem,3.4vw,2.5rem);letter-spacing:-.02em;line-height:1.08;margin-top:4px;
+  }
+  .intro h2 em{font-style:normal;color:var(--petrol)}
+  .intro p{margin-top:10px;color:var(--ink-soft);max-width:70ch}
+
+  main{max-width:1220px;margin:0 auto;padding:8px 24px 60px}
+
+  /* Kader-Punkte */
+  .kdot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none;border:1px solid rgba(0,0,0,.12)}
+  .kdot.gl{background:var(--gelb)}
+  .kdot.hk{background:var(--petrol)}
+  .kdot.k{background:var(--lila)}
+  .kdot.none{background:#E4E9E5}
+  sup{font-size:.62em}
+
+  .strip{margin-top:38px}
+  .strip-head{
+    display:flex;align-items:baseline;gap:14px;flex-wrap:wrap;
+    border-bottom:1px solid var(--line);padding-bottom:8px;margin-bottom:16px;
+  }
+  .strip-head h3{font-family:var(--display);font-weight:600;font-size:1.05rem}
+  .strip-head .sub{font-size:.78rem;color:var(--ink-soft)}
+  .strip-grid{display:grid;gap:12px;grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}
+
+  .unit-card{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:14px 16px;text-align:left;cursor:pointer;font-family:var(--body);
+    display:flex;flex-direction:column;gap:6px;
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .unit-card.dir{border-top:3px solid var(--petrol-deep)}
+  .unit-card.res{border-top:3px solid var(--kiwi)}
+  .unit-card.eaz{border-top:3px solid var(--petrol)}
+  .unit-card:hover,.unit-card:focus-visible{
+    transform:translateY(-3px);border-color:var(--petrol);
+    box-shadow:0 10px 26px -14px rgba(90,149,157,.35);
+  }
+  .unit-card:focus-visible{outline:2px solid var(--petrol);outline-offset:2px}
+  .unit-card h5{font-family:var(--display);font-weight:600;font-size:.95rem}
+  .unit-card .pline{display:flex;align-items:center;gap:7px;font-size:.8rem;color:var(--ink-soft)}
+  .unit-card .pline b{color:var(--ink);font-weight:600}
+  .unit-card .extra{font-size:.72rem;color:var(--ink-soft)}
+
+  /* Vollzug-Band */
+  .vollzug-band{
+    margin-top:44px;
+    background:var(--petrol-deep);color:#fff;border-radius:var(--radius);
+    padding:16px 22px;border:0;width:100%;text-align:left;cursor:pointer;
+    display:flex;align-items:baseline;justify-content:space-between;gap:14px;flex-wrap:wrap;
+    font-family:var(--body);
+    transition:transform .18s ease, box-shadow .18s ease;
+  }
+  .vollzug-band:hover,.vollzug-band:focus-visible{transform:translateY(-2px);box-shadow:0 12px 26px -14px rgba(63,109,115,.6)}
+  .vollzug-band:focus-visible{outline:2px solid var(--petrol);outline-offset:3px}
+  .vollzug-band h3{font-family:var(--display);font-weight:800;font-size:1.15rem;letter-spacing:-.01em}
+  .vollzug-band .who{font-size:.82rem;opacity:.9}
+  .vollzug-band .tag{
+    font-size:.68rem;text-transform:uppercase;letter-spacing:.13em;
+    border:1px solid rgba(255,255,255,.4);border-radius:99px;padding:3px 10px;
+  }
+
+  .matrix-scroll{overflow-x:auto;padding-bottom:6px;margin-top:14px}
+  .matrix{
+    display:grid;gap:10px;min-width:780px;
+    grid-template-columns:215px repeat(2, minmax(250px,1fr));
+  }
+  .corner{
+    display:flex;flex-direction:column;justify-content:flex-end;
+    font-size:.7rem;color:var(--ink-soft);line-height:1.45;padding:6px 4px;
+  }
+  .axis-func{color:var(--petrol);font-weight:600}
+  .axis-prod{color:#54578A;font-weight:600}
+
+  .col-head,.row-head{
+    border-radius:var(--radius);padding:12px 14px;border:0;text-align:left;cursor:pointer;
+    font-family:var(--body);
+    transition:transform .15s ease, box-shadow .15s ease;
+  }
+  .col-head:hover,.row-head:hover,.col-head:focus-visible,.row-head:focus-visible{transform:translateY(-2px)}
+  .col-head:focus-visible,.row-head:focus-visible{outline:2px solid var(--petrol);outline-offset:2px}
+  .col-head{
+    background:var(--mint-soft);
+    border:1px solid color-mix(in srgb, var(--petrol) 25%, var(--line));
+    border-top:3px solid var(--petrol);
+  }
+  .row-head{
+    background:var(--lila-soft);
+    border:1px solid color-mix(in srgb, var(--lila) 25%, var(--line));
+    border-left:3px solid var(--lila);
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  .col-head .role,.row-head .role{font-size:.64rem;text-transform:uppercase;letter-spacing:.12em;font-weight:600}
+  .col-head .role{color:var(--petrol-deep)}
+  .row-head .role{color:#54578A}
+  .col-head h4,.row-head h4{font-family:var(--display);font-weight:600;font-size:.96rem;margin-top:2px}
+  .col-head .name,.row-head .name{font-size:.76rem;color:var(--ink-soft)}
+  .col-head .hint,.row-head .hint{font-size:.66rem;color:var(--ink-soft);margin-top:3px;opacity:.8}
+
+  .cell{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:12px 14px;text-align:left;cursor:pointer;font-family:var(--body);
+    display:flex;flex-direction:column;gap:2px;
+    transition:transform .18s ease, box-shadow .18s ease, border-color .18s ease;
+  }
+  .cell:hover,.cell:focus-visible{
+    transform:translateY(-3px);border-color:var(--petrol);
+    box-shadow:0 10px 26px -14px rgba(90,149,157,.35);
+  }
+  .cell:focus-visible{outline:2px solid var(--petrol);outline-offset:2px}
+  .cell .gruppe{
+    display:flex;justify-content:space-between;gap:10px;align-items:baseline;
+    padding:5px 0;border-bottom:1px solid var(--line);font-size:.82rem;
+  }
+  .cell .gruppe:last-of-type{border-bottom:0}
+  .cell .gname{font-weight:600;font-size:.8rem;display:flex;align-items:center;gap:7px}
+  .cell .gleiter{color:var(--ink-soft);text-align:right}
+  .cell .more{font-size:.72rem;color:var(--petrol-deep);font-weight:600;margin-top:4px}
+
+  .col-head.hl{box-shadow:0 0 0 2px var(--petrol) inset}
+  .row-head.hl{box-shadow:0 0 0 2px var(--lila) inset}
+
+  /* Panel */
+  .backdrop{
+    position:fixed;inset:0;z-index:30;background:rgba(20,32,28,.45);
+    opacity:0;pointer-events:none;transition:opacity .25s ease;
+  }
+  .backdrop.open{opacity:1;pointer-events:auto}
+  main,.intro{transition:transform .3s ease, filter .3s ease}
+  body.zoomed main, body.zoomed .intro{transform:scale(1.02);filter:blur(2px)}
+
+  .panel{
+    position:fixed;z-index:40;top:50%;left:50%;
+    width:min(700px, calc(100vw - 32px));
+    max-height:min(84vh, 740px);overflow:auto;
+    background:var(--card);border-radius:20px;border:1px solid var(--line);
+    box-shadow:0 30px 80px -30px rgba(63,109,115,.5);
+    padding:30px 32px 32px;
+    transform:translate(-50%,-50%) scale(.88);
+    opacity:0;pointer-events:none;
+    transition:transform .28s cubic-bezier(.2,.8,.25,1), opacity .22s ease;
+  }
+  .panel.open{transform:translate(-50%,-50%) scale(1);opacity:1;pointer-events:auto}
+  .panel .eyebrow{font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--petrol);font-weight:600}
+  .panel h3{
+    font-family:var(--display);font-weight:800;
+    font-size:clamp(1.4rem,3vw,1.9rem);letter-spacing:-.015em;margin-top:6px;line-height:1.12;
+  }
+  .panel .close{
+    position:absolute;top:18px;right:18px;
+    border:1px solid var(--line);background:var(--paper);
+    width:34px;height:34px;border-radius:50%;cursor:pointer;
+    font-size:1rem;line-height:1;color:var(--ink-soft);
+    transition:background .15s,color .15s;
+  }
+  .panel .close:hover{background:var(--petrol);color:#fff;border-color:var(--petrol)}
+  .panel-section{margin-top:20px}
+  .panel-section .label{font-size:.72rem;text-transform:uppercase;letter-spacing:.14em;color:var(--ink-soft);margin-bottom:8px}
+  .plist{list-style:none}
+  .plist li{
+    padding:8px 0;border-bottom:1px solid var(--line);
+    display:flex;justify-content:space-between;gap:12px;align-items:baseline;font-size:.9rem;
+  }
+  .plist li .pn{display:flex;align-items:center;gap:8px}
+  .plist li .r{color:var(--ink-soft);font-size:.8rem;text-align:right}
+  .plist li.teamrow{font-size:.84rem;color:var(--ink-soft);border-bottom:1px dotted var(--line)}
+  .note{
+    background:var(--paper);border:1px dashed var(--line);border-radius:12px;
+    padding:12px 14px;color:var(--ink-soft);font-size:.82rem;margin-top:14px;
+  }
+  .back-link{
+    margin-top:24px;display:inline-block;background:none;border:0;cursor:pointer;
+    font-family:var(--body);font-size:.85rem;font-weight:600;color:var(--petrol);
+  }
+  .back-link:hover{text-decoration:underline}
+
+  footer{max-width:1220px;margin:0 auto;padding:10px 24px 70px}
+  .legende{
+    background:var(--card);border:1px solid var(--line);border-radius:var(--radius);
+    padding:18px 20px;font-size:.8rem;color:var(--ink-soft);
+  }
+  .legende h4{font-family:var(--display);font-weight:600;font-size:.9rem;color:var(--ink);margin-bottom:10px}
+  .legende .kader-row{display:flex;gap:20px;flex-wrap:wrap;margin-bottom:12px}
+  .legende .kader-row span{display:inline-flex;align-items:center;gap:7px}
+  .legende dl{display:grid;grid-template-columns:auto 1fr;gap:4px 14px}
+  .legende dt{font-weight:600;color:var(--ink)}
+  .legende .quelle{margin-top:12px;padding-top:10px;border-top:1px solid var(--line)}
+
+  @media (max-width:640px){
+    .panel{padding:24px 20px 26px}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{transition:none !important;animation:none !important}
+    body.zoomed main, body.zoomed .intro{transform:none;filter:none}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <h1>Bundesamt für Zivildienst ZIVI</h1>
+    <span>Organigramm</span>
+  </div>
+</header>
+
+<section class="intro">
+  <div class="dept">Eidgenössisches Departement für Wirtschaft, Bildung und Forschung WBF</div>
+  <h2>Direktion, <em>Vollzug</em> und <em>Ressourcen</em> — auf einen Blick.</h2>
+  <p>Der Direktionsbereich Vollzug ist als Matrixorganisation aufgebaut: Die fachlichen Regelkreise ABI und BEZ (Spalten) kreuzen sich mit den Regionalzentren (Zeilen). Klicke auf eine Einheit, eine Spalten- oder Zeilenüberschrift für Details.</p>
+</section>
+
+<main>
+  <!-- Direktion -->
+  <section class="strip">
+    <div class="strip-head">
+      <h3>Direktion</h3>
+    </div>
+    <div class="strip-grid" id="direktion-grid"></div>
+  </section>
+
+  <!-- Vollzug (Matrix) -->
+  <button class="vollzug-band" id="vollzug-band" aria-haspopup="dialog">
+    <div>
+      <h3>Direktionsbereich Vollzug</h3>
+      <div class="who">Zürcher Borlat Regula · Stellvertretende Direktorin, Leiterin Vollzug</div>
+    </div>
+    <span class="tag">Matrix-Organisation</span>
+  </button>
+
+  <div class="matrix-scroll">
+    <div class="matrix" id="matrix"></div>
+  </div>
+
+  <!-- EAZ (Fachbereich ohne Matrix-Zeilen) -->
+  <section class="strip">
+    <div class="strip-head">
+      <h3>Fachbereich EAZ</h3>
+      <span class="sub">Einführung und Ausbildung ZIVI · Teil des Direktionsbereichs Vollzug</span>
+    </div>
+    <div class="strip-grid" id="eaz-grid"></div>
+  </section>
+
+  <!-- Ressourcen -->
+  <section class="strip">
+    <div class="strip-head">
+      <h3>Direktionsbereich Ressourcen</h3>
+    </div>
+    <div class="strip-grid" id="ressourcen-grid"></div>
+  </section>
+</main>
+
+<footer>
+  <div class="legende">
+    <h4>Legende & Abkürzungen</h4>
+    <div class="kader-row">
+      <span><i class="kdot gl"></i> Mitglied der Geschäftsleitung</span>
+      <span><i class="kdot hk"></i> Höheres Kader</span>
+      <span><i class="kdot k"></i> Kader</span>
+    </div>
+    <dl>
+      <dt>ABI</dt><dd>Anerkennung, Betreuung, Inspektion Einsatzbetriebe</dd>
+      <dt>BEZ</dt><dd>Betreuung und Einsätze Zivis</dd>
+      <dt>EAZ</dt><dd>Einführung und Ausbildung ZIVI</dd>
+      <dt>RZ</dt><dd>Regionalzentren</dd>
+      <dt>Stv</dt><dd>Stellvertretung der vorgesetzten Funktion</dd>
+      <dt>a.i.</dt><dd>ad interim (vorübergehend)</dd>
+      <dt>¹</dt><dd>Stellvertretung Leiter/in Fachgruppe</dd>
+      <dt>*</dt><dd>Rolle Datenschutzberater/in</dd>
+    </dl>
+    <div class="quelle">Quelle: Offizielles Organigramm ZIVI (externe Version), Stand Januar 2026, zivi.admin.ch.</div>
+  </div>
+</footer>
+
+<div class="backdrop" id="backdrop"></div>
+<div class="panel" id="panel" role="dialog" aria-modal="true" aria-labelledby="panel-title"></div>
+
+<script>
+/* =============================================================
+   DATEN PFLEGEN: nur diesen Block anpassen.
+   Quelle: Organigramm ZIVI extern, Januar 2026.
+
+   Personenfelder:
+     n   = Name
+     r   = Rolle/Funktion
+     k   = Kaderstufe: "gl" (GL-Mitglied), "hk" (Höheres Kader),
+           "k" (Kader), weglassen = ohne Markierung
+     stv = true, wenn Stellvertretung der vorgesetzten Funktion
+
+   FÜR DIE INTERNE VERSION: Bei jeder Gruppe kann ein Feld
+     team: ["Name 1", "Name 2", ...]
+   ergänzt werden – die Mitarbeitenden erscheinen dann automatisch
+   im Detailfenster der jeweiligen Gruppe. In dieser externen
+   Version bleiben die team-Felder bewusst leer.
+   ============================================================= */
+const ORG = {
+  direktion: [
+    {
+      name: "Direktion",
+      personen: [
+        { n: "Hartmann Christoph", r: "Direktor", k: "gl" },
+        { n: "Zürcher Borlat Regula", r: "Stellvertretende Direktorin", k: "gl" }
+      ]
+    },
+    {
+      name: "Kommunikation",
+      personen: [
+        { n: "Flückiger Christoph.test", r: "Leiter", k: "hk" }
+      ]
+    },
+    {
+      name: "Rechtsdienst",
+      personen: [
+        { n: "Richterich Christian", r: "Leiter *", k: "hk" }
+      ]
+    },
+    {
+      name: "Betriebliche Planung und Geschäftssteuerung",
+      personen: [
+        { n: "Maurer Franziska", r: "Fachmitarbeiterin" }
+      ]
+    }
+  ],
+
+  vollzug: {
+    leitung: { n: "Zürcher Borlat Regula", r: "Stellvertretende Direktorin · Leiterin Vollzug", k: "gl" },
+    stab: [
+      { n: "Neuenschwander Simon", r: "Product Owner «ZiviConnect»" },
+      { n: "Feuz Baptiste", r: "Wissenschaftlicher Mitarbeiter" },
+      { n: "Kalyamina Valeria", r: "Wissenschaftliche Mitarbeiterin" }
+    ],
+    fachbereiche: {
+      abi: {
+        name: "ABI",
+        lang: "Anerkennung, Betreuung, Inspektion Einsatzbetriebe",
+        personen: [
+          { n: "Kürsteiner Majithia Gisela", r: "Leiterin", k: "hk" },
+          { n: "Estoppey Adrien", r: "Leiter Fachgruppe ABI", k: "k", stv: true },
+          { n: "Jenni Daniela", r: "Fachspezialistin Fachbereich Betreuung Einsatzbetriebe ¹" }
+        ]
+      },
+      bez: {
+        name: "BEZ",
+        lang: "Betreuung und Einsätze Zivis",
+        personen: [
+          { n: "Müller Matthias", r: "Leiter", k: "hk", stv: true },
+          { n: "Schori Martin", r: "Leiter Fachgruppe BEZ", k: "k", stv: true },
+          { n: "Wenger Hanspeter", r: "Fachspezialist Zulassung ¹" }
+        ]
+      }
+    },
+    regionalzentren: [
+      { id: "ab", name: "RZ Aarau & Bellinzona", leiter: { n: "Mathys Paul", r: "Leiter", k: "hk" } },
+      { id: "lt", name: "RZ Lausanne & Thun",    leiter: { n: "Honsberger Sarah", r: "Leiterin", k: "hk" } },
+      { id: "rt", name: "RZ Rüti",               leiter: { n: "Rauser Gabriele E.", r: "Leiterin", k: "hk" } }
+    ],
+    zellen: [
+      { rz: "ab", rk: "abi", gruppen: [
+        { g: "Gruppe ABI Aarau & Bellinzona", l: "Edion Noëlle", r: "Gruppenleiterin", k: "k", team: [] }
+      ]},
+      { rz: "ab", rk: "bez", gruppen: [
+        { g: "Gruppe BEZ Aarau",      l: "Ferraro Maxim",    r: "Gruppenleiter", k: "k", stv: true, team: [] },
+        { g: "Gruppe BEZ Aarau",      l: "Wegmann Matthias", r: "Gruppenleiter", k: "k", team: [] },
+        { g: "Gruppe BEZ Aarau",      l: "Emmenegger Ivo",   r: "Gruppenleiter a.i.", k: "k", team: [] },
+        { g: "Gruppe BEZ Aarau",      l: "Gehrig Andrea",    r: "Gruppenleiterin a.i.", k: "k", team: [] },
+        { g: "Gruppo BEZ Bellinzona", l: "Schmid Mirjam",    r: "Gruppenleiterin", k: "k", team: [] }
+      ]},
+      { rz: "lt", rk: "abi", gruppen: [
+        { g: "Gruppe ABI Lausanne", l: "Preisner Hersi Valérie", r: "Gruppenleiterin", k: "k", stv: true, team: [] },
+        { g: "Gruppe ABI Thun",     l: "Casablanca Patrizia",    r: "Gruppenleiterin", k: "k", team: [] }
+      ]},
+      { rz: "lt", rk: "bez", gruppen: [
+        { g: "Gruppe BEZ Lausanne", l: "Girard Maria",     r: "Gruppenleiterin", k: "k", team: [] },
+        { g: "Gruppe BEZ Lausanne", l: "Piselli Giuliana", r: "Gruppenleiterin", k: "k", team: [] },
+        { g: "Gruppe BEZ Thun",     l: "Habte Yosef",      r: "Gruppenleiter", k: "k", team: [] },
+        { g: "Gruppe BEZ Thun",     l: "Rivas Bruno",      r: "Gruppenleiter", k: "k", team: [] },
+        { g: "Gruppe BEZ Thun",     l: "Cancar Ana",       r: "Gruppenleiterin", k: "k", team: [] }
+      ]},
+      { rz: "rt", rk: "abi", gruppen: [
+        { g: "Gruppe ABI", l: "Diggelmann Benjamin", r: "Gruppenleiter", k: "k", team: [] }
+      ]},
+      { rz: "rt", rk: "bez", gruppen: [
+        { g: "Gruppe BEZ", l: "Egli Roland",         r: "Gruppenleiter", k: "k", stv: true, team: [] },
+        { g: "Gruppe BEZ", l: "Rüegg Judith",        r: "Gruppenleiterin", k: "k", team: [] },
+        { g: "Gruppe BEZ", l: "Bachofner Christian", r: "Gruppenleiter", k: "k", team: [] }
+      ]}
+    ]
+  },
+
+  eaz: [
+    {
+      name: "EAZ",
+      personen: [
+        { n: "Riesen Pascal", r: "Leiter", k: "hk" }
+      ]
+    },
+    {
+      name: "Ausbildungszentrum ZIVI",
+      personen: [
+        { n: "Wyssbrod Barbara", r: "Leiterin", k: "k" }
+      ]
+    }
+  ],
+
+  ressourcen: [
+    {
+      name: "Ressourcen",
+      personen: [
+        { n: "Meyer Marco", r: "Leiter Ressourcen", k: "gl" }
+      ]
+    },
+    {
+      name: "Human Resources",
+      personen: [
+        { n: "Zillig Thomas", r: "Leiter", k: "hk", stv: true }
+      ]
+    },
+    {
+      name: "Finanzen und Logistik",
+      personen: [
+        { n: "Lauper-Stoller Heidi", r: "Leiterin", k: "hk" }
+      ]
+    },
+    {
+      name: "Informations- und Kommunikationstechnologien",
+      personen: [
+        { n: "Hagi Patrick", r: "Leiter", k: "hk" }
+      ]
+    }
+  ]
+};
+/* ================= Ende Datenblock ================= */
+
+const matrixEl = document.getElementById("matrix");
+const panel    = document.getElementById("panel");
+const backdrop = document.getElementById("backdrop");
+let lastFocus = null;
+
+const kdot = k => `<i class="kdot ${k || "none"}"></i>`;
+const pname = p => `${p.n}${p.stv ? "<sup>Stv</sup>" : ""}`;
+
+function personList(personen){
+  return `<ul class="plist">${personen.map(p =>
+    `<li><span class="pn">${kdot(p.k)}<span>${pname(p)}</span></span><span class="r">${p.r}</span></li>`).join("")}</ul>`;
+}
+
+function renderStrip(gridId, units, cssClass, eyebrow){
+  const grid = document.getElementById(gridId);
+  grid.innerHTML = "";
+  units.forEach(u => {
+    const c = document.createElement("button");
+    c.type = "button";
+    c.className = "unit-card " + cssClass;
+    c.setAttribute("aria-haspopup","dialog");
+    c.innerHTML = `
+      <h5>${u.name}</h5>
+      ${u.personen.map(p => `<div class="pline">${kdot(p.k)}<span><b>${pname(p)}</b> · ${p.r}</span></div>`).join("")}`;
+    c.addEventListener("click", () => {
+      openPanel(eyebrow, u.name, `
+        <div class="panel-section">
+          <div class="label">Personen</div>
+          ${personList(u.personen)}
+        </div>`, c);
+    });
+    grid.appendChild(c);
+  });
+}
+
+function renderMatrix(){
+  matrixEl.innerHTML = "";
+  const fb = ORG.vollzug.fachbereiche;
+
+  const corner = document.createElement("div");
+  corner.className = "corner";
+  corner.innerHTML = `<div><span class="axis-func">Spalten:</span> Regelkreise / Fachbereiche</div>
+                      <div><span class="axis-prod">Zeilen:</span> Regionalzentren</div>`;
+  matrixEl.appendChild(corner);
+
+  ["abi","bez"].forEach(id => {
+    const f = fb[id];
+    const h = document.createElement("button");
+    h.type = "button";
+    h.className = "col-head";
+    h.dataset.col = id;
+    h.setAttribute("aria-haspopup","dialog");
+    h.innerHTML = `<div class="role">Regelkreis ${f.name}</div>
+                   <h4>${f.lang}</h4>
+                   <div class="name">Fachbereich ${f.name}: ${f.personen[0].n}${f.personen[0].stv ? " (Stv)" : ""} · ${f.personen[0].r}</div>
+                   <div class="hint">Anklicken für Fachgruppe & Fachspezialist:in</div>`;
+    h.addEventListener("click", () => {
+      openPanel(`Regelkreis ${f.name}`, `Fachbereich ${f.name}`, `
+        <div class="panel-section">
+          <div class="label">${f.lang}</div>
+          ${personList(f.personen)}
+        </div>
+        <div class="note">Der Fachbereich ${f.name} führt den Regelkreis ${f.name} fachlich über alle Regionalzentren hinweg (Spalte in der Matrix).</div>`, h);
+    });
+    matrixEl.appendChild(h);
+  });
+
+  ORG.vollzug.regionalzentren.forEach(rz => {
+    const rh = document.createElement("button");
+    rh.type = "button";
+    rh.className = "row-head";
+    rh.dataset.row = rz.id;
+    rh.setAttribute("aria-haspopup","dialog");
+    rh.innerHTML = `<div class="role">Regionalzentren</div><h4>${rz.name}</h4>
+                    <div class="name">${rz.leiter.n} · ${rz.leiter.r}</div>`;
+    rh.addEventListener("click", () => {
+      const alleGruppen = ORG.vollzug.zellen
+        .filter(z => z.rz === rz.id)
+        .flatMap(z => z.gruppen);
+      openPanel("Regionalzentren", rz.name, `
+        <div class="panel-section">
+          <div class="label">Leitung</div>
+          ${personList([rz.leiter])}
+        </div>
+        <div class="panel-section">
+          <div class="label">Gruppen · ${alleGruppen.length}</div>
+          ${gruppenList(alleGruppen)}
+        </div>`, rh);
+    });
+    matrixEl.appendChild(rh);
+
+    ["abi","bez"].forEach(rkId => {
+      const data = ORG.vollzug.zellen.find(z => z.rz === rz.id && z.rk === rkId);
+      const cell = document.createElement("button");
+      cell.type = "button";
+      cell.className = "cell";
+      cell.setAttribute("aria-haspopup","dialog");
+      const shown = data.gruppen.slice(0,3);
+      cell.innerHTML = shown.map(g =>
+        `<div class="gruppe"><span class="gname">${kdot(g.k)}${g.g}</span><span class="gleiter">${g.l}${g.stv ? "<sup>Stv</sup>" : ""}</span></div>`
+      ).join("") + (data.gruppen.length > 3 ? `<div class="more">+${data.gruppen.length - 3} weitere Gruppen — anklicken</div>` : "");
+      cell.addEventListener("click", () => openCellPanel(data, rz, fb[rkId], cell));
+      cell.addEventListener("mouseenter", () => highlight(rkId, rz.id, true));
+      cell.addEventListener("mouseleave", () => highlight(rkId, rz.id, false));
+      cell.addEventListener("focus",  () => highlight(rkId, rz.id, true));
+      cell.addEventListener("blur",   () => highlight(rkId, rz.id, false));
+      matrixEl.appendChild(cell);
+    });
+  });
+}
+
+function gruppenList(gruppen){
+  return `<ul class="plist">${gruppen.map(g => {
+    const teamRows = (g.team && g.team.length)
+      ? g.team.map(t => `<li class="teamrow"><span class="pn"><i class="kdot none"></i><span>${t}</span></span><span class="r">Mitarbeiter:in</span></li>`).join("")
+      : "";
+    return `<li><span class="pn">${kdot(g.k)}<span><b>${g.g}</b></span></span><span class="r">${g.l}${g.stv ? "<sup>Stv</sup>" : ""} · ${g.r}</span></li>${teamRows}`;
+  }).join("")}</ul>`;
+}
+
+function highlight(colId, rowId, on){
+  matrixEl.querySelector(`.col-head[data-col="${colId}"]`)?.classList.toggle("hl", on);
+  matrixEl.querySelector(`.row-head[data-row="${rowId}"]`)?.classList.toggle("hl", on);
+}
+
+function openCellPanel(data, rz, fbereich, trigger){
+  const body = `
+    <div class="panel-section">
+      <div class="label">Doppelte Führungslinie (Matrix)</div>
+      <ul class="plist">
+        <li><span class="pn">${kdot(fbereich.personen[0].k)}<span><b>Fachbereich ${fbereich.name}</b> — ${pname(fbereich.personen[0])}</span></span><span class="r">fachliche Führung</span></li>
+        <li><span class="pn">${kdot(rz.leiter.k)}<span><b>${rz.name}</b> — ${rz.leiter.n}</span></span><span class="r">Führung vor Ort</span></li>
+      </ul>
+    </div>
+    <div class="panel-section">
+      <div class="label">Gruppen · ${data.gruppen.length}</div>
+      ${gruppenList(data.gruppen)}
+    </div>`;
+  openPanel(`${rz.name} × Regelkreis ${fbereich.name}`, "Gruppen im Überblick", body, trigger);
+}
+
+function openVollzugPanel(trigger){
+  const v = ORG.vollzug;
+  const body = `
+    <div class="panel-section">
+      <div class="label">Leitung</div>
+      ${personList([v.leitung])}
+    </div>
+    <div class="panel-section">
+      <div class="label">Direkt unterstellt</div>
+      ${personList(v.stab)}
+    </div>
+    <div class="note">Der Vollzug ist als Matrixorganisation aufgebaut: Die Fachbereiche ABI und BEZ führen ihre Regelkreise fachlich über alle Regionalzentren hinweg, während die Regionalzentren die Gruppen vor Ort führen. Der Fachbereich EAZ (Einführung und Ausbildung ZIVI) gehört ebenfalls zum Vollzug.</div>`;
+  openPanel("Direktionsbereich", "Vollzug (Matrix-Organisation)", body, trigger);
+}
+
+function openPanel(eyebrow, title, bodyHtml, trigger){
+  lastFocus = trigger;
+  panel.innerHTML = `
+    <button class="close" aria-label="Schliessen">✕</button>
+    <div class="eyebrow">${eyebrow}</div>
+    <h3 id="panel-title">${title}</h3>
+    ${bodyHtml}
+    <button class="back-link">← Zur Übersicht</button>`;
+  panel.querySelector(".close").addEventListener("click", closePanel);
+  panel.querySelector(".back-link").addEventListener("click", closePanel);
+  document.body.classList.add("zoomed");
+  backdrop.classList.add("open");
+  panel.classList.add("open");
+  panel.querySelector(".close").focus();
+}
+
+function closePanel(){
+  document.body.classList.remove("zoomed");
+  backdrop.classList.remove("open");
+  panel.classList.remove("open");
+  if(lastFocus) lastFocus.focus();
+}
+
+backdrop.addEventListener("click", closePanel);
+document.addEventListener("keydown", e => {
+  if(e.key === "Escape" && panel.classList.contains("open")) closePanel();
+});
+
+document.getElementById("vollzug-band").addEventListener("click", function(){ openVollzugPanel(this); });
+
+renderStrip("direktion-grid", ORG.direktion, "dir", "Direktion");
+renderStrip("eaz-grid", ORG.eaz, "eaz", "Fachbereich EAZ · Vollzug");
+renderStrip("ressourcen-grid", ORG.ressourcen, "res", "Direktionsbereich Ressourcen");
+renderMatrix();
+</script>
+</body>
+</html>
